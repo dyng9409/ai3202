@@ -49,3 +49,19 @@ class Map(object):
     def get(self,x,y):
         #returns the node at coordinates x,y
         return self.map[y][x]
+
+    def applyHeuristic1(self):
+        for y in range(0,self.ybound):
+            for x in range(0,self.xbound):
+                n = self.get(x,y)
+                heur = (self.xbound-x-1)+(self.ybound-y-1)
+                n.setHeuristic(heur)
+
+    def applyHeuristic2(self):
+        for x in range(0,self.ybound):
+            for x in range(0,self.ybound):
+                n = self.get(x,y)
+                #TODO: new heuristic
+                heur = (self.xbound-x-1)+(self.ybound-y-1)
+                n.setHeuristic(heur)
+
