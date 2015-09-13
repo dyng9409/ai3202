@@ -1,4 +1,5 @@
 #parse the map file
+import map as m
 
 def parse(f):
     #parses the map file and returns a 
@@ -18,6 +19,9 @@ def parse(f):
     while sq.count([]) > 0:
         sq.remove([])
 
-    #now we're left with a list of lists with the property of each square
+    #now we're left with a list of lists with the main
+    #property of each square
+    
+    #turn each element into a Node object with more descriptive data
 
-
+    return sq
