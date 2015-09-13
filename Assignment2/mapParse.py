@@ -1,5 +1,5 @@
 #parse the map file
-import map as m
+import world
 
 def parse(f):
     #parses the map file and returns a 
@@ -23,5 +23,13 @@ def parse(f):
     #property of each square
     
     #turn each element into a Node object with more descriptive data
+    for y in range(0,len(sq)):
+        for x in range(0,len(sq[0])):
+            sq[y][x] = world.Node(sq[y][x])
+            print sq[y][x].typ
+        print '\n'
 
-    return sq
+    #finally, creating a mroe concrete map object for us to work with
+    worldmap = world.Map(sq)
+
+    return worldmap
