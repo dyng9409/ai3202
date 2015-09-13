@@ -4,12 +4,20 @@
 
 class Node(object):
     
-    def __init__(self,t):
+    def __init__(self,t,x,y):
         self.typ = t
+        self.x = x
+        self.y = y
         self.distanceToStart = 0
         self.heuristic = 0
         self.f = 0
         self.parent = None
+
+    def xval(self):
+        return self.x
+
+    def yval(self):
+        return self.y
 
     def fval(self):
         return self.f
@@ -37,3 +45,7 @@ class Map(object):
             self.xbound = len(lst[0])
         else:
             self.xbound = 0
+
+    def get(self,x,y):
+        #returns the node at coordinates x,y
+        return self.map[y][x]
