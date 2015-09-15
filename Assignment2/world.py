@@ -22,6 +22,12 @@ class Node(object):
     def fval(self):
         return self.f
 
+    def distVal(self):
+        return self.distanceToStart
+
+    def hval(self):
+        return self.heuristic
+
     def setF(self, val):
         self.f = val
 
@@ -54,7 +60,7 @@ class Map(object):
         for y in range(0,self.ybound):
             for x in range(0,self.xbound):
                 n = self.get(x,y)
-                heur = (self.xbound-x-1)+(self.ybound-y-1)
+                heur = ((self.xbound-x-1)+(self.ybound-y-1))*10
                 n.setHeuristic(heur)
 
     def applyHeuristic2(self):
