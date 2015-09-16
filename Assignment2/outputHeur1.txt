@@ -7,14 +7,15 @@ Path to goal:
 (6, 3)
 (5, 3)
 (4, 4)
-(3, 5)
-(2, 6)
-(1, 6)
-(0, 6)   START
-Cost of path:  120
-Squares explored:  45
+(4, 5)
+(3, 6)
+(2, 7)
+(1, 7)
+(0, 7)   START
+Cost of path:  130
+Squares explored:  52
 
-World2
+World 2
 Path to goal:
 (9, 0)   END
 (8, 0)

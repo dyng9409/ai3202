@@ -31,7 +31,7 @@ right), the y-coordinate is somewhat unconventional (up to down). however,
 this can still easily be adapted to a different y-coordinate system if 
 necessary.
 
-when examining performance, both heuristics provide the same exact path with
-the same exact cost, but in the case of the second heuristic, we get far
-less nodes explored. the exact results can be found in the outputHeur1.txt and 
-outputHeur2.txt files respectively
+when examining performance, both heuristics provide similar paths with
+the same exact cost (exactly the same in the case of World2), but in the case 
+of the second heuristic, we get far less nodes explored. the exact results can
+be found in the outputHeur1.txt and outputHeur2.txt files respectively
