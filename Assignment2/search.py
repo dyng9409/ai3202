@@ -86,7 +86,7 @@ def astarsearch(worldMap):
                         if (curdistance+24) < nextdist:
                             oplist.remove((node.fval(),node))
                             node.setParent(current)
-                            node.setDistance(curdistance+20)
+                            node.setDistance(curdistance+24)
                             node.setF(node.distVal()+node.hval())
                             oplist.append((node.fval(),node))
             else:

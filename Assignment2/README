@@ -1,0 +1,37 @@
+Running Instructions:
+python astar.py mapname heuristic (MUST be in the same directory)
+mapname = name of the map file to use
+heuristic = 1 (manhattan distance) or 2 (diagonal-hybrid)
+
+Example: python astar.py World1.txt 2
+
+-------Motivation and Explanation of Second Heuristic--------
+
+The second heuristic I used for this is a combination of the diagonal distance
+and remaining horizontal/vertical distance. To be more clear, from the square
+you are currenlty considering, move as far diagonally towards the goal as 
+you can, then move the remaining vertical/horizontal distance. The reason
+I chose this type of movement is because moving diagonally is far more efficent
+than moving horizontal+vertical (14 vs 20). Thus, you want to maximize your 
+diagonal movement and minimize your horizontal/verticle movement, which is
+achieved using a greedy approach. The general equation for this is:
+
+x = current square's x position
+y = current square's y position
+xbound = index limit in x direction
+ybound = index limit in y direction
+
+            |14*y , if x+y = max(xbound,ybound)
+heuristic = |14*y+10*(xbound-(x+y)) , if x+y < max(xbound,ybound)
+            |14*(xbound-x)+10*(y-(xbound-x)) , if x+y > max(xbound,ybound)
+
+the equation differes slightly from the code due to messy implementation. this
+also relies on the fact that while the x-coordinate is conventional (left to
+right), the y-coordinate is somewhat unconventional (up to down). however, 
+this can still easily be adapted to a different y-coordinate system if 
+necessary.
+
+when examining performance, both heuristics provide the same exact path with
+the same exact cost, but in the case of the second heuristic, we get far
+less nodes explored. the exact results can be found in the outputHeur1.txt and 
+outputHeur2.txt files respectively

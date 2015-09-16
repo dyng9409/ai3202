@@ -64,10 +64,25 @@ class Map(object):
                 n.setHeuristic(heur)
 
     def applyHeuristic2(self):
-        for x in range(0,self.ybound):
-            for x in range(0,self.ybound):
+        limval = 0
+        if self.ybound > self.xbound:
+            limval = self.ybound-1
+        else:
+            limval = self.xbound-1
+        for y in range(0,self.ybound):
+            for x in range(0,self.xbound):
                 n = self.get(x,y)
                 #TODO: new heuristic
-                heur = (self.xbound-x-1)+(self.ybound-y-1)
+                selfx = n.xval()
+                selfy = n.yval()
+                sumcoord = x+y
+                heur = 0
+                if sumcoord == limval:
+                    heur = 14*selfy
+                elif sumcoord < limval:
+                    heur = 14*selfy+10*(self.xbound-(selfx+selfy)-1)
+                else:
+                    heur = 14*(self.xbound-selfx-1)+10*(selfy-(self.xbound-selfx-1))
+
                 n.setHeuristic(heur)
 

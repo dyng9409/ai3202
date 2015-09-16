@@ -1,0 +1,34 @@
+World 1
+Path to goal:
+(9, 0)   END
+(8, 0)
+(7, 1)
+(7, 2)
+(6, 3)
+(5, 3)
+(4, 4)
+(3, 5)
+(2, 6)
+(1, 6)
+(0, 6)   START
+Cost of path:  120
+Squares explored:  14
+
+World 2
+Path to goal:
+(9, 0)   END
+(8, 0)
+(7, 0)
+(6, 0)
+(5, 0)
+(4, 1)
+(4, 2)
+(4, 3)
+(4, 4)
+(3, 5)
+(3, 6)
+(2, 7)
+(1, 7)
+(0, 7)   START
+Cost of path:  142
+Squares explored:  33
