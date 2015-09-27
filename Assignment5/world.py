@@ -5,15 +5,14 @@
 
 class Node(object):
     
-    def __init__(self,t,x,y):
+    def __init__(self,t,x,y,r):
         self.typ = t
         self.x = x
         self.y = y
-        self.distanceToStart = 0
-        self.heuristic = 0
-        self.f = 0
-        self.parent = None
-
+        self.optimal = None
+        self.delta = 0
+        self.utility = 0
+        self.reward = r 
 
 class Map(object):
 

@@ -26,17 +26,17 @@ def parse(f):
     for y in range(0,len(sq)):
         for x in range(0,len(sq[0])):
             if sq[y][x] == '0':
-                sq[y][x] = world.Node('plain',x,y)
+                sq[y][x] = world.Node('plain',x,y,0.0)
             elif sq[y][x] == '1':
-                sq[y][x] = world.Node('mountain',x,y)
+                sq[y][x] = world.Node('mountain',x,y,-1.0)
             elif sq[y][x] == '2':
-                sq[y][x] = world.Node('wall',x,y)
+                sq[y][x] = world.Node('wall',x,y,0.0)
             elif sq[y][x] == '3':
-                sq[y][x] = world.Node('snake',x,y)
+                sq[y][x] = world.Node('snake',x,y,-2.0)
             elif sq[y][x] == '4':
-                sq[y][x] = world.Node('barn',x,y)
+                sq[y][x] = world.Node('barn',x,y,5.0)
             else:
-                sq[y][x] = world.Node('goal',x,y)
+                sq[y][x] = world.Node('goal',x,y,50.0)
 
 
 
