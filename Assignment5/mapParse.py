@@ -34,7 +34,7 @@ def parse(f):
             elif sq[y][x] == '3':
                 sq[y][x] = world.Node('snake',x,y,-2.0)
             elif sq[y][x] == '4':
-                sq[y][x] = world.Node('barn',x,y,5.0)
+                sq[y][x] = world.Node('barn',x,y,1.0)
             else:
                 sq[y][x] = world.Node('goal',x,y,50.0)
 

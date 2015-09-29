@@ -40,11 +40,11 @@ def updateUtility(worldmap, node, gamma):
 
     maxEU = max(leftEU, rightEU, upEU, downEU)
 
-    if maxU == leftEU:
+    if maxEU == leftEU:
         return (reward+gamma*leftEU, 'left')
-    elif maxU == rightEU:
+    elif maxEU == rightEU:
         return (reward+gamma*rightEU, 'right')
-    elif maxU == upEU:
+    elif maxEU == upEU:
         return (reward+gamma*upEU, 'up')
     else:
         return (reward+gamma*downEU, 'down')
@@ -53,4 +53,30 @@ def updateUtility(worldmap, node, gamma):
 def valueIteration(worldmap, epsilon):
     gamma = 0.9
     start = worldmap.get(0,0)
-    pass
+    goal = worldmap.get(worldmap.xbound, worldmap.ybound)
+    goal.setUtility(50.0)
+
+    deltaCutoff = epsilon*(1-gamma)/gamma
+    changeFlag = True
+    while changeFlag:
+        changeFlag = False
+        for x in range(worldmap.xbound,-1,-1):
+            for y in range(worldmap.ybound,-1,-1):
+                curNode = worldmap.get(x,y)
+                if curNode is None:
+                    continue
+                elif curNode.typ is 'goal':
+                    continue
+                prevDelta = curNode.getDelta()
+                curUtility = curNode.getUtility()
+                if prevDelta < deltaCutoff:
+                    continue
+                else:
+                    changeFlag = True
+                    nextUtility = updateUtility(worldmap, curNode, gamma)
+                    curNode.setUtility(nextUtility[0])
+                    curNode.setOptimal(nextUtility[1])
+                    diff = abs(curUtility-nextUtility[0])
+                    if diff < prevDelta:
+                        curNode.setDelta(diff)
+

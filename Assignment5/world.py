@@ -10,9 +10,9 @@ class Node(object):
         self.x = x
         self.y = y
         self.optimal = None
-        self.delta = 0
+        self.delta = float('inf')
         self.utility = 0
-        self.reward = r 
+        self.reward = r
 
     def getReward(self):
         return self.reward
@@ -66,3 +66,14 @@ class Map(object):
             return None
         else:
             return self.map[y][x]
+
+    def printOptimal(self):
+        for y in range(self.ybound,-1,-1):
+            for x in range(0, self.xbound+1):
+                if self.get(x,y) is not None:
+                    print (self.get(x,y).optimal, round(self.get(x,y).utility,3)),
+                else:
+                    print 'wall',
+            print '\n'
+
+
