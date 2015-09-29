@@ -1,0 +1,12 @@
+Running Instructions:
+python mdpvi.py [worldfile] [epsilon value]
+Example:
+python mdpvi.py World1MDP.txt 0.5
+
+Answer to question:
+If we decerease the value of epsilon, the solution path does not change. This is because this further refines the search, but with an epsilon of 0.5,
+we have already found the optimal path. Refining the utilities only refines the expected utility. However, if we increase epsilon to greater than 
+about 3, our expected values become much less refined, and lose accuracy. At this point, the path changes to a less optimal solution (which we can tell
+by the fact that it heads towards a mountain instead of a plain). As mentioned, if we increase epsilon, we are telling the value iteration to stop with
+less calculations performed, meaning we get less accurate estimates. With an iterative calculation method, it is always better to have more calculations
+(within reason of course).
