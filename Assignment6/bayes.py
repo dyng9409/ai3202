@@ -13,6 +13,8 @@ args = parser.parse_args()
 priorArgs = args.p
 bnet = data.bnet
 #for now, we're going to assume the argument to p is nice formatted and blah blah blah
+
+#setting the priors if its flagged
 if priorArgs is not None:
     setval = float(priorArgs[1])
     if priorArgs[0] == 'S':
@@ -22,7 +24,19 @@ if priorArgs is not None:
         editNode = bnet.getNode('pollution')
         editNode.setPrior(setval)
 
-print bnet.getNode('smoking').getPrior()
-print bnet.getNode('pollution').getPrior()
+#finding which probability we're returning
+if args.j is not None:
+    bnet.jointProbability(args.j)
+    pass
+#pipe has to be in quotes for this to work?
+elif args.g is not None:
+    bnet.condProbability(args.g, args.g)
+    pass
+else:
+    retvals = bnet.marginalProbability(args.m)
+    pass
 
+#should have functions return distributions, and then pick from there what
+#is asked for
 
+print retvals
