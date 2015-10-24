@@ -1,4 +1,5 @@
 import argparse
+import re
 import data
 
 parser = argparse.ArgumentParser(description = 'Calculator for Bayes Net Probabilities')
@@ -23,20 +24,36 @@ if priorArgs is not None:
     else:
         editNode = bnet.getNode('pollution')
         editNode.setPrior(setval)
-
+events = None
 #finding which probability we're returning
 if args.j is not None:
     bnet.jointProbability(args.j)
+    events = args.j
     pass
 #pipe has to be in quotes for this to work?
 elif args.g is not None:
-    bnet.condProbability(args.g, args.g)
+    splitargs = list(args.g[0])
+    splitdex = splitargs.index('|')
+    target = splitargs[0:splitdex]
+    conditions = splitargs[splitdex+1:]
+    retvals = bnet.condProbability(target, conditions)
+    events = args.g
     pass
 else:
-    retvals = bnet.marginalProbability(args.m)
-    pass
+    eventlist = data.net.subArgs(list(args.m[0]), bnet)
+    (desc, retvals) = bnet.marginalProbability(eventlist)
+    params = args.m[0]
+    event = eventlist[0]
+    print 'In the case of pollution, True corresponds to Low'
+    if re.search("[PSCXD]", params) is not None:
+        print desc
+        print retvals
+    elif re.search('~', params) is not None:
+        print desc + ' False'
+        print retvals[event.false]
+    else:
+        print desc + ' True'
+        print retvals[event.true]
 
 #should have functions return distributions, and then pick from there what
 #is asked for
-
-print retvals

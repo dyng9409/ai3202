@@ -1,6 +1,24 @@
 #data structure for bayes nets
 import re
 
+def subArgs(symbols, nnet):
+    #given a list of symbols, replace with appropriate events/nodes from net
+    eventList = []
+    for sym in symbols:
+        if sym == 'c' or sym == 'C':
+            eventList.append(nnet.getNode('cancer'))
+        elif sym == 'd' or sym == 'D':
+            eventList.append(nnet.getNode('dys'))
+        elif sym == 's' or sym == 'S':
+            eventList.append(nnet.getNode('smoking'))
+        elif sym == 'p' or sym == 'P':
+            eventList.append(nnet.getNode('pollution'))
+        elif sym == 'x' or sym == 'X':
+            eventList.append(nnet.getNode('xray'))
+        else:
+            continue
+    return eventList
+            
 class Node(object):
     
     def __init__(self, name):
@@ -12,16 +30,13 @@ class Node(object):
         self.cond = None
         #list of parent nodes
         self.parents = None
-        #list of parent nodes
-        self.children = None
         #prior probabilities (mutually exclusive with cond)
         self.prior = None
+        self.true = True
+        self.false = False
 
     def getName(self):
         return self.name
-
-    def getChildren(self):
-        return self.children
 
     def getParents(self):
         return self.parents
@@ -42,122 +57,61 @@ class Net(object):
     def __init__(self):
         self.nodeDict = {}
 
-    def addNode(self, node):
-        nodename = node.getName()
-        self.nodeDict[nodename] = node
+    def addNode(self, node, dep):
+        self.nodeDict[node] = dep
 
     def jointProbability(self, events):
         print 'calculating joint probability for'
         print events
         return
     
-    def condProbability(self, events1, events2):
+    def condProbability(self, event1, events2):
         print 'calculating conditional probability for'
-        print events1
-        print 'and'
+        print event1
+        print 'based on'
         print events2
         return
 
     def marginalProbability(self, event):
-        print 'calculating marginal probability for'
-        print event
-        target = None
-        event = event[0] 
-        if re.search('d|D', event) is not None:
-            target = self.getNode('dys')
-        elif re.search('x|X', event) is not None:
-            target = self.getNode('xray')
-        elif re.search('p|P', event) is not None:
-            target = self.getNode('pollution')
-        elif re.search('c|C', event) is not None:
-            target = self.getNode('cancer')
-        elif re.search('s|S', event) is not None:
-            target = self.getNode('smoking')
+        target = event[0]
+        if target.getParents() is None:
+            retdict = {
+                    target.true:target.getPrior(),
+                    target.false:1-target.getPrior()
+                    }
+            desc = 'Variable Key Order: '+target.getName()
+            return (desc,retdict)
+        elif target.getName() is 'cancer':
+            p0 = target.getParents()[0]
+            p1 = target.getParents()[1]
+            pcancer = 0
+            for key, val in target.cond.iteritems():
+                p0factor = p0.prior if key[0] is p0.true else 1-p0.prior
+                p1factor = p1.prior if key[1] is p1.true else 1-p1.prior
+                pcancer = pcancer + val*p0factor*p1factor
+            retdict = {
+                    target.true:pcancer,
+                    target.false:1-pcancer
+                    }
+            desc = 'Variable Key Order: '+target.getName()
+            return(desc, retdict)
         else:
-            print 'uwotm8'
-            return {}
+            p0 = target.getParents()[0]
+            ptarget = 0
+            p0prior = self.marginalProbability([p0])[1][p0.true]
+            for key, val in target.cond.iteritems():
+                p0factor =  p0prior if key is p0.true else 1-p0prior
+                ptarget = ptarget + val*p0factor
 
-        if target.getName() == 'pollution':
-            priorLow = target.getPrior()
-            priorHigh = float('{0:.2f}'.format(1-priorLow))
-            if event == 'P':
-                retdict = {
-                        'L':priorLow,
-                        'H':priorHigh
-                        }
-            elif event == 'p':
-                retdict = {
-                        'L':priorLow
-                        }
-            else:
-                retdict = {
-                        'H':priorHigh
-                        }
-        elif target.getName() == 'smoking':
-            priorTrue = target.getPrior()
-            priorFalse = 1-priorTrue
-            if event == 'S':
-                retdict = {
-                        'T':priorTrue,
-                        'F':priorFalse
-                        }
-            elif event == 's':
-                retdict = {
-                        'T':priorTrue
-                        }
-            else:
-                retdict = {
-                        'F':priorFalse
-                        }
-        elif target.getName() == 'cancer':
-            spriorTrue = self.getNode('smoking').getPrior()
-            spriorFalse = float('{0:.2f}'.format(1-spriorTrue))
-            ppriorTrue = self.getNode('pollution').getPrior()
-            ppriorFalse = float('{0:.2f}'.format(1-ppriorTrue))
-            cond = target.getCond()
-            cancerMarginal = 0
-            cancerMarginal += cond['HT']*spriorTrue*ppriorFalse
-            cancerMarginal += cond['HF']*spriorFalse*ppriorFalse
-            cancerMarginal += cond['LT']*spriorTrue*ppriorTrue
-            cancerMarginal += cond['LF']*spriorFalse*ppriorTrue
-            cancerMarginalF = 1-cancerMarginal
-            if event == 'C':
-                retdict = {
-                        'T':cancerMarginal,
-                        'F':cancerMarginalF
-                        }
-            elif event == 'c':
-                retdict = {
-                        'T':cancerMarginal
-                        }
-            else:
-                retdict = {
-                        'F':cancerMarginalF
-                        }
-        else:
-            cancerprob = self.marginalProbability('C')
-            cancerTrue = cancerprob['T']
-            cancerFalse = cancerprob['F']
-            cond = target.getCond()
-            marginal = 0
-            marginal += cond['T']*cancerTrue
-            marginal += cond['F']*cancerFalse
-            marginalFalse = 1-marginal
-            if event == 'X' or event == 'D':
-                retdict = {
-                        'T':marginal,
-                        'F':marginalFalse
-                        }
-            elif event == 'x' or event == 'd':
-                retdict = {
-                        'T':marginal
-                        }
-            else:
-                retdict = {
-                        'F':marginalFalse
-                        }
-
-        return retdict
-
+            retdict = {
+                    target.true:ptarget,
+                    target.false:1-ptarget
+                    }
+            desc = 'Variable Key Order: '+target.getName()
+            return (desc, retdict)
+        
     def getNode(self, nodeName):
-        return self.nodeDict[nodeName]
+        for key, val in self.nodeDict.iteritems():
+            if key.getName() == nodeName:
+                return key
+

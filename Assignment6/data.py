@@ -11,41 +11,33 @@ dysNode = net.Node('dys')
 
 
 smokingNode.prior = 0.3
-smokingNode.children = [cancerNode]
 pollutionNode.prior = 0.9
-smokingNode.children = [cancerNode]
 
-cancerNode.cond = {
-                    'HT': 0.05,
-                    'HF': 0.02,
-                    'LT': 0.03,
-                    'LF': 0.001
-                  }
 cancerNode.parents = [pollutionNode, smokingNode]
-cancerNode.children = [xrayNode, dysNode]
-#key is string with random variable value
-#H = high polution, L = low pollution
-#T = smokes, F = not smokes
-#example key: HF (high polution and doesn't smoke)
-#value will be decimal between 0 and 1 as usual
-#represents POSITIVE (e.g. probability that cancer occurs given HF)
-#for nodes with multiple parents, the variables are in the order that the 
-#parent list is (so for cancer, the parent list is POLLUTION
+p = cancerNode.parents
+cancerNode.cond = {
+                    (p[0].false, p[1].true): 0.05,
+                    (p[0].false, p[1].false): 0.02,
+                    (p[0].true, p[1].true): 0.03,
+                    (p[0].true, p[1].false): 0.001
+                  }
 
-xrayNode.cond = {
-                  'T': 0.9,
-                  'F': 0.2
-                }
 xrayNode.parents = [cancerNode]
+p = xrayNode.parents
+xrayNode.cond = {
+                  (p[0].true): 0.9,
+                  (p[0].false): 0.2
+                }
 
-dysNode.cond = {
-                 'T': 0.65,
-                 'F': 0.30
-               }
 dysNode.parents = [cancerNode]
+p = dysNode.parents
+dysNode.cond = {
+                 (p[0].true): 0.65,
+                 (p[0].false): 0.30
+               }
 
-bnet.addNode(smokingNode)
-bnet.addNode(pollutionNode)
-bnet.addNode(cancerNode)
-bnet.addNode(xrayNode)
-bnet.addNode(dysNode)
+bnet.addNode(smokingNode, [cancerNode])
+bnet.addNode(pollutionNode, [cancerNode])
+bnet.addNode(cancerNode, [xrayNode, dysNode])
+bnet.addNode(xrayNode, [])
+bnet.addNode(dysNode, [])
