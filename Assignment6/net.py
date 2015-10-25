@@ -153,6 +153,7 @@ class Net(object):
                 rets[(True, False)] = rets[(False, True)]
                 rets[(False, True)] = tmp
                 for key, val in rets.iteritems():
+                    print key, val
                     if key[0] is True:
                         val = val*prob2
                     else:
@@ -160,7 +161,7 @@ class Net(object):
                     if key[1] is True:
                         rets[key] = val/prob
                     else:
-                        rets[key] = (1-val)/(1-prob)
+                        rets[key] = val/(1-prob)
                 return desc, rets
             return
                 
