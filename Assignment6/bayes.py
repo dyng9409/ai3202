@@ -41,7 +41,43 @@ elif args.g is not None:
     ev1 = data.net.subArgs(conditions, bnet)
     (desc, retvals) = bnet.condProbability(ev0[0], ev1)
     print desc
-    print retvals
+    if re.search("[PSCXD]", target[0]) is not None:
+        if re.search("[PSCXD]", conditions[0]) is not None:
+            print retvals
+        elif re.search("~", conditions[0]) is not None:
+            for key, val in retvals.iteritems():
+                if key[1] is False:
+                    print key, retvals[key]
+        else:
+            for key, val in retvals.iteritems():
+                if key[1] is True:
+                    print key, retvals[key]
+    elif re.search("~", target[0]) is not None:
+        if re.search("[PSCXD]", conditions[0]) is not None:
+            for key, val in retvals.iteritems():
+                if key[0] is False:
+                    print key,retvals[key]
+        elif re.search("~", conditions[0]) is not None:
+            for key, val in retvals.iteritems():
+                if key[0] is False and key[1] is False:
+                    print key, retvals[key]
+        else:
+            for key, val in retvals.iteritems():
+                if key[0] is False and key[1] is True:
+                    print key, retvals[key]
+    else:
+        if re.search("[PSCXD]", conditions[0]) is not None:
+            for key, val in retvals.iteritems():
+                if key[0] is True:
+                    print key,retvals[key]
+        elif re.search("~", conditions[0]) is not None:
+            for key, val in retvals.iteritems():
+                if key[0] is True and key[1] is False:
+                    print key, retvals[key]
+        else:
+            for key, val in retvals.iteritems():
+                if key[0] is True and key[1] is True:
+                    print key, retvals[key]
 else:
     eventlist = data.net.subArgs(list(args.m[0]), bnet)
     (desc, retvals) = bnet.marginalProbability(eventlist)

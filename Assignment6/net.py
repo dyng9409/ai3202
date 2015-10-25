@@ -96,21 +96,20 @@ class Net(object):
             return
     
     def condProbability(self, event0, events1):
-        print 'calculating conditional probability for'
-        print event0
-        print 'based on'
-        print events1
         #conditional probability for 1 and 1
         if len(events1) is 1:
             ev1 = events1[0]
             ev1p = ev1.getParents()
+            if ev1p is None:
+                ev1p = []
             ev0 = event0
             ev0p = ev0.getParents()
-            if ev1 in ev0.getParents():
+            if ev0p is None:
+                ev0p = []
+            if ev1 in ev0p:
                 ev1prob = self.marginalProbability([ev1])[1][True]
                 ev0prob = ev0.getCond()
                 #given T and given F
-                print ev0.name
                 ev0probT = 0 
                 ev0probF = 0
                 if ev0.name is 'cancer':
@@ -146,7 +145,23 @@ class Net(object):
                 return (desc, retdict)
 
             elif ev0 in ev1.getParents():
-                pass 
+                print 'asdf'
+                desc, rets = self.condProbability(ev1, [ev0])
+                prob = self.marginalProbability([ev1])[1][True]
+                prob2 = self.marginalProbability([ev0])[1][True]
+                tmp = rets[(True, False)]
+                rets[(True, False)] = rets[(False, True)]
+                rets[(False, True)] = tmp
+                for key, val in rets.iteritems():
+                    if key[0] is True:
+                        val = val*prob2
+                    else:
+                        val = val*(1-prob2)
+                    if key[1] is True:
+                        rets[key] = val/prob
+                    else:
+                        rets[key] = (1-val)/(1-prob)
+                return desc, rets
             return
                 
 
