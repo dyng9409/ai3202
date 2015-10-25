@@ -27,18 +27,21 @@ if priorArgs is not None:
 events = None
 #finding which probability we're returning
 if args.j is not None:
-    bnet.jointProbability(args.j)
-    events = args.j
-    pass
+    eventlist = data.net.subArgs(list(args.j[0]), bnet)
+    (desc, retvals) = bnet.jointProbability(eventlist)
+    print desc
+    print retvals
 #pipe has to be in quotes for this to work?
 elif args.g is not None:
     splitargs = list(args.g[0])
     splitdex = splitargs.index('|')
     target = splitargs[0:splitdex]
     conditions = splitargs[splitdex+1:]
-    retvals = bnet.condProbability(target, conditions)
-    events = args.g
-    pass
+    ev0 = data.net.subArgs(target, bnet)
+    ev1 = data.net.subArgs(conditions, bnet)
+    (desc, retvals) = bnet.condProbability(ev0[0], ev1)
+    print desc
+    print retvals
 else:
     eventlist = data.net.subArgs(list(args.m[0]), bnet)
     (desc, retvals) = bnet.marginalProbability(eventlist)
@@ -55,5 +58,3 @@ else:
         print desc + ' True'
         print retvals[event.true]
 
-#should have functions return distributions, and then pick from there what
-#is asked for

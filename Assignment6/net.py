@@ -61,16 +61,94 @@ class Net(object):
         self.nodeDict[node] = dep
 
     def jointProbability(self, events):
-        print 'calculating joint probability for'
-        print events
-        return
+        if len(events) is 2:
+            ev0 = events[0]
+            ev1 = events[1]
+            ev0p = events[0].getParents()
+            ev1p = events[1].getParents()
+            ev0c = self.nodeDict[ev0]
+            ev1c = self.nodeDict[ev1]
+            if ev0p is None and ev1p is None:
+                retdict = {
+                        (ev0.true, ev1.true):ev0.prior*ev1.prior,
+                        (ev0.true, ev1.false):ev0.prior*(1-ev1.prior),
+                        (ev0.false, ev1.true):(1-ev0.prior)*ev1.prior,
+                        (ev0.false, ev1.false):(1-ev0.prior)*(1-ev1.prior)
+                        }
+                desc = "Variable order: " + ev0.getName() + ', '+ev1.getName()
+                return (desc, retdict)
+            elif len(ev0c) is 0 and len(ev1c) is 0:
+                ev0prob = self.marginalProbability([ev0])[1][True]
+                ev1prob = self.marginalProbability([ev1])[1][True]
+                retdict = {
+                        (ev0.true, ev1.true):ev0prob*ev1prob,
+                        (ev0.true, ev1.false):ev0prob*(1-ev1prob),
+                        (ev0.false, ev1.true):(1-ev0prob)*ev1prob,
+                        (ev0.false, ev1.false):(1-ev0prob)*(1-ev1prob)
+                        }
+                desc = "Variable order: "+ev0.getName()+', '+ev1.getName()
+                return (desc, retdict)
+            else:
+                #otherwise, we're going to need onditional dependency
+                prob = self.condProbability(ev0, [ev1])
+                pass
+        else:
+            return
     
-    def condProbability(self, event1, events2):
+    def condProbability(self, event0, events1):
         print 'calculating conditional probability for'
-        print event1
+        print event0
         print 'based on'
-        print events2
-        return
+        print events1
+        #conditional probability for 1 and 1
+        if len(events1) is 1:
+            ev1 = events1[0]
+            ev1p = ev1.getParents()
+            ev0 = event0
+            ev0p = ev0.getParents()
+            if ev1 in ev0.getParents():
+                ev1prob = self.marginalProbability([ev1])[1][True]
+                ev0prob = ev0.getCond()
+                #given T and given F
+                print ev0.name
+                ev0probT = 0 
+                ev0probF = 0
+                if ev0.name is 'cancer':
+                    if ev1.name is 'pollution':
+                        sprob = self.getNode('smoking').prior
+                        pprob = self.getNode('pollution').prior
+                        ev0probT = ev0prob[(True, True)]*sprob*pprob
+                        ev0probT = ev0probT+ev0prob[(True, False)]*(1-sprob)*pprob
+                        ev0probT = ev0probT/pprob
+                        ev0probF = ev0prob[(False, True)]*sprob*(1-pprob)
+                        ev0probF = ev0probF+ev0prob[(False, False)]*(1-sprob)*(1-pprob)
+                        ev0probF = ev0probF/(1-pprob)
+
+                    else:
+                        sprob = self.getNode('smoking').prior
+                        pprob = self.getNode('pollution').prior
+                        ev0probT = ev0prob[(True, True)]*sprob*pprob
+                        ev0probT = ev0probT+ev0prob[(False, True)]*(1-pprob)*sprob
+                        ev0probT = ev0probT/sprob
+                        ev0probF = ev0prob[(True, False)]*pprob*(1-sprob)
+                        ev0probF = ev0probF+ev0prob[(False, False)]*(1-sprob)*(1-pprob)
+                        ev0probF = ev0probF/(1-sprob)
+                else:
+                    ev0probT = ev0prob[True]
+                    ev0probF = ev0prob[False]
+                retdict = {
+                        (ev0.true, ev1.true):ev0probT,
+                        (ev0.true, ev1.false):ev0probF,
+                        (ev0.false, ev1.true):1-ev0probT,
+                        (ev0.false, ev1.false):1-ev0probF
+                        }
+                desc = 'Variable order: '+ev0.name+' given '+ev1.name
+                return (desc, retdict)
+
+            elif ev0 in ev1.getParents():
+                pass 
+            return
+                
 
     def marginalProbability(self, event):
         target = event[0]
