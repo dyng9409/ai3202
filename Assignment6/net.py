@@ -90,8 +90,15 @@ class Net(object):
                 return (desc, retdict)
             else:
                 #otherwise, we're going to need onditional dependency
-                prob = self.condProbability(ev0, [ev1])
-                pass
+                (desc, retvals) = self.condProbability(ev0, [ev1])
+                prob = self.marginalProbability([ev1])[1][True]
+                for key, val in retvals.iteritems():
+                    if key[1] is True:
+                        retvals[key] = val*prob
+                    else:
+                        retvals[key] = val*(1-prob)
+                desc = ev0.name+' '+ev1.name
+                return (desc, retvals)
         else:
             return
     
@@ -145,7 +152,6 @@ class Net(object):
                 return (desc, retdict)
 
             elif ev0 in ev1.getParents():
-                print 'asdf'
                 desc, rets = self.condProbability(ev1, [ev0])
                 prob = self.marginalProbability([ev1])[1][True]
                 prob2 = self.marginalProbability([ev0])[1][True]
@@ -153,7 +159,6 @@ class Net(object):
                 rets[(True, False)] = rets[(False, True)]
                 rets[(False, True)] = tmp
                 for key, val in rets.iteritems():
-                    print key, val
                     if key[0] is True:
                         val = val*prob2
                     else:
