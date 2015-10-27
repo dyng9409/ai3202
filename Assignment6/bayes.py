@@ -29,7 +29,14 @@ events = None
 if args.j is not None:
     eventlist = data.net.subArgs(list(args.j[0]), bnet)
     (desc, retvals) = bnet.jointProbability(eventlist)
+    params = args.j[0]
     print desc
+    if re.search("[PSCXD]", params) is not None:
+        pass
+    elif re.search('~', params) is not None:
+        pass
+    else:
+        pass
     print retvals
 #pipe has to be in quotes for this to work?
 elif args.g is not None:

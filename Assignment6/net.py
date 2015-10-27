@@ -151,7 +151,7 @@ class Net(object):
                 desc = 'Variable order: '+ev0.name+' given '+ev1.name
                 return (desc, retdict)
 
-            elif ev0 in ev1.getParents():
+            elif ev0 in ev1p:
                 desc, rets = self.condProbability(ev1, [ev0])
                 prob = self.marginalProbability([ev1])[1][True]
                 prob2 = self.marginalProbability([ev0])[1][True]
@@ -168,6 +168,64 @@ class Net(object):
                     else:
                         rets[key] = val/(1-prob)
                 return desc, rets
+            else:
+                #case ev1 is ev0 ancestor
+                if len(ev0p) is not 0:
+                    cancerN = self.getNode('cancer')
+                    pollN = self.getNode('pollution').prior
+                    smokingN = self.getNode('smoking').prior
+                    (desc, cancProb) = self.marginalProbability([ev0p[0]])
+                    v1 = ev0.cond[True]
+                    v2 = ev0.cond[False]
+                    #v1(v3+v4)+v2(v5+v6)
+                    v3 = cancerN.cond[True, True]*pollN*smokingN
+                    v4 = 0
+                    if ev1.name is 'smoking':
+                        v4 = cancerN.cond[False, True]*(1-pollN)*smokingN
+                    else:
+                        v4 = cancerN.cond[True, False]*(1-smokingN)*pollN
+                    v5 = (1-cancerN.cond[True, True])*pollN*smokingN
+                    v6 = 0
+                    if ev1.name is 'smoking':
+                        v6 = (1-cancerN.cond[False, True])*(1-pollN)*smokingN
+                    else:
+                        v6 = (1-cancerN.cond[True, False])*(1-smokingN)*pollN
+                    retdict = {}
+                    retdict[True, True] = (v1*(v3+v4)+v2*(v5+v6))/(v3+v4+v5+v6)
+                    retdict[False, True] = 1-retdict[True, True]
+
+                    #v1(v3+v4)+v2(v5+v6)
+                    v3 = cancerN.cond[False, False]*(1-pollN)*(1-smokingN)
+                    v4 = 0
+                    if ev1.name is 'smoking':
+                        v4 = cancerN.cond[True, False]*(1-smokingN)*pollN
+                    else:
+                        v4 = cancerN.cond[False, True]*(1-pollN)*smokingN
+                    v5 = (1-cancerN.cond[False, False])*(1-pollN)*(1-smokingN)
+                    v6 = 0
+                    if ev1.name is 'smoking':
+                        v6 = (1-cancerN.cond[True, False])*(1-smokingN)*pollN
+                    else:
+                        v6 = (1-cancerN.cond[True, False])*(1-pollN)*smokingN
+
+                    retdict[True, False] = (v1*(v3+v4)+v2*(v5+v6))/(v3+v4+v5+v6)
+                    retdict[False, False] = 1-retdict[True, False]
+                    desc = ev0.name+' '+ev1.name
+                    return (desc, retdict)
+
+                #case ev0 is ev1 ancesetor
+                else:
+                    (desc, rets) = self.condProbability(ev1, [ev0])
+                    desc = ev0.name+' '+ev1.name
+                    p = ev0.prior
+                    (d, ret) = self.marginalProbability([ev1])
+                    p2 = ret[True]
+                    retdict = {}
+                    retdict[True,True] = rets[True, True]*p/p2
+                    retdict[True, False] = rets[False, True]*p/(1-p2)
+                    retdict[False, True] =  1-retdict[True, True]
+                    retdict[False, False] =  1-retdict[True, False]
+                    return (desc, retdict)
             return
                 
 
