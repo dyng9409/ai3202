@@ -32,12 +32,44 @@ if args.j is not None:
     params = args.j[0]
     print desc
     if re.search("[PSCXD]", params) is not None:
-        pass
+        if re.search("~", params) is not None:
+            if params[0] is '~':
+                for key,val in retvals.iteritems():
+                    if key[0] is False and key[1] is True:
+                        print key, val
+                    elif key[0] is False and key[1] is False:
+                        print key, val
+            else:
+                for key, val in retvals.iteritems():
+                    if key[0] is True and key[1] is False: 
+                        print key, val
+                    elif key[0] is False and key[1] is False:
+                        print key, val
+        elif re.search("[pscxd]", params) is not None:
+            if re.search("[pscxd]", params[0]) is not None:
+                for key, val in retvals.iteritems():
+                    if key[0] is True and key[1] is True:
+                        print key, val
+                    elif key[0] is True and key[1] is False:
+                        print key, val
+            else:
+                for key, val in retvals.iteritems():
+                    if key[0] is True and key[1] is True:
+                        print key, val
+                    elif key[0] is False and key[1] is True:
+                        print key, val
+        else:
+            print retvals
     elif re.search('~', params) is not None:
-        pass
+        if params[0] is '~':
+            if params[2] is '~':
+                print retvals[False, False]
+            else:
+                print retvals[False, True]
+        else:
+            print retvals[True, False]
     else:
-        pass
-    print retvals
+        print retvals[True, True]
 #pipe has to be in quotes for this to work?
 elif args.g is not None:
     splitargs = list(args.g[0])
