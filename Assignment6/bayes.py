@@ -19,11 +19,9 @@ bnet = data.bnet
 if priorArgs is not None:
     setval = float(priorArgs[1])
     if priorArgs[0] == 'S':
-        editNode = bnet.getNode('smoking')
-        editNode.setPrior(setval)
+        bnet.getNode('smoking').setPrior(setval)
     else:
-        editNode = bnet.getNode('pollution')
-        editNode.setPrior(setval)
+        bnet.getNode('pollution').setPrior(setval)
 events = None
 #finding which probability we're returning
 if args.j is not None:
