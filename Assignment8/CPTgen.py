@@ -7,5 +7,21 @@ import data
 #{'b':{'a':emssioncount+1/statecount+27, 'b':emissioncount+1/statecount+27}}
 #
 
-transitionModel = Model('transitions', stateCount)
-emissionModel = Model('emissions', stateCount)
+#data.states holds all the states
+
+f = open('typos20.data')
+first = f.readline()
+print first
+trueState = first[0]
+evidence = first[2]
+data.states['dummy'].updateTrans(trueState)
+data.states[trueState].updateCount()
+data.states[trueState].updateEmit(evidence)
+for line in f:
+    print line
+    nextState = line[0]
+    evidence = line[2]
+    data.states[trueState].updateTrans(nextState)
+    trueState = nextState
+    data.states[trueState].updateCount()
+    data.states[trueState].updateEmit(evidence)
