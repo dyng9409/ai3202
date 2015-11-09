@@ -63,14 +63,14 @@ class State(object):
     def printEmissions(self):
         #prints emissions CPT
         print 'Emissions CPT for state ', self.name
-        for key, val in self.emissions.iteritems():
+        for key, val in sorted(self.emissions.iteritems()):
             print key+' | '+str(self.getEmitProb(key))
         return
 
     def printTransitions(self):
         #print transitions CPT
         print 'Transition CPT for state ', self.name
-        for key, val in self.transitions.iteritems():
+        for key, val in sorted(self.transitions.iteritems()):
             print key+' | '+str(self.getTransProb(key))
         return
 
@@ -93,3 +93,9 @@ statestring = 'abcdefghijklmnopqrstuvwxyz_'
 states['dummy'] = State('dummy')
 for elt in list(statestring):
     states[elt] = State(elt)
+
+#questions to ask:
+#do we only include typos in observable states
+#how is the data formatted?
+#if only typos are considered, add functionailty to remove
+#non detected emissions

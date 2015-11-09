@@ -11,17 +11,36 @@ import data
 
 f = open('typos20.data')
 first = f.readline()
-print first
 trueState = first[0]
 evidence = first[2]
 data.states['dummy'].updateTrans(trueState)
 data.states[trueState].updateCount()
 data.states[trueState].updateEmit(evidence)
 for line in f:
-    print line
     nextState = line[0]
     evidence = line[2]
     data.states[trueState].updateTrans(nextState)
     trueState = nextState
     data.states[trueState].updateCount()
     data.states[trueState].updateEmit(evidence)
+
+statestring = 'abcdefghijklmnopqrstuvwxyz'
+#getting rid of typos that never occur
+for elt in list(statestring):
+    deletelist = []
+    for key, val in data.states[elt].emissions.iteritems():
+        if val == 1:
+            deletelist.append(key)
+    for k in deletelist:
+        del(data.states[elt].emissions[k])
+
+statestring = 'abcdefghijklmnopqrstuvwxyz_'
+data.states['dummy'].printTransitions()
+data.states['dummy'].printEmissions()
+print '\n----------\n'
+
+for elt in list(statestring):
+    data.states[elt].printTransitions()
+    print '\n----------\n'
+    data.states[elt].printEmissions()
+    print '\n----------\n'
