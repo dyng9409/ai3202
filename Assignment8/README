@@ -1,0 +1,3 @@
+usage: python CPTgen.py
+requires: data.py and typo data in same folder
+output.txt contains output of table generation
