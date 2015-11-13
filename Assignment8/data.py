@@ -64,14 +64,16 @@ class State(object):
         #prints emissions CPT
         print 'Emissions CPT for state ', self.name
         for key, val in sorted(self.emissions.iteritems()):
-            print key+' | '+str(self.getEmitProb(key))
+            print 'P(',key,'|',self.name,') = '+str(self.getEmitProb(key))
+        print 'Emissions CPT for state ', self.name
         return
 
     def printTransitions(self):
         #print transitions CPT
         print 'Transition CPT for state ', self.name
         for key, val in sorted(self.transitions.iteritems()):
-            print key+' | '+str(self.getTransProb(key))
+            print 'P(',key,'|',self.name,') = '+str(self.getTransProb(key))
+        print 'Transition CPT for state ', self.name
         return
 
 #spaces seem to always be transcribed properly, and dont ever seem to be

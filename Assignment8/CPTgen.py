@@ -34,13 +34,13 @@ for elt in list(statestring):
     for k in deletelist:
         del(data.states[elt].emissions[k])
 
-statestring = 'abcdefghijklmnopqrstuvwxyz_'
-data.states['dummy'].printTransitions()
-data.states['dummy'].printEmissions()
-print '\n----------\n'
-
-for elt in list(statestring):
-    data.states[elt].printTransitions()
-    print '\n----------\n'
-    data.states[elt].printEmissions()
-    print '\n----------\n'
+#statestring = 'abcdefghijklmnopqrstuvwxyz_'
+#data.states['dummy'].printTransitions()
+#data.states['dummy'].printEmissions()
+#print '\n----------\n'
+#
+#for elt in list(statestring):
+#    data.states[elt].printTransitions()
+#    print '\n----------\n'
+#    data.states[elt].printEmissions()
+#    print '\n----------\n'
